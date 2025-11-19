@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>P17-Online</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#eaf6fb;
+  --card:#ffffff;
+  --primary:#0d62ff;
+  --muted:#66737f;
+  --rounded:12px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;
+  color:#07203a;
+  background:var(--bg)
+}
+
+header{
+  background:white;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+header img{width:44px;height:44px}
+header .title{display:flex;flex-direction:column}
+header .title .main{font-weight:700;font-size:20px}
+header .title .sub{font-size:13px;opacity:0.75}
+
+/* === Ajustes responsive del menú === */
+.tabs-wrap{display:flex;justify-content:center;margin:14px 0;padding:0 12px}
+.tabs{
+  background:white;
+  padding:12px 14px;
+  border-radius:18px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;        /* permite bajar a varias líneas */
+  overflow:auto;         /* si faltara espacio, permite scroll horizontal */
+  -webkit-overflow-scrolling:touch;
+  justify-content:center;
+  max-width:1200px;
+  margin:0 auto;
+}
+.tab{
+  padding:8px 14px;
+  border-radius:999px;
+  border:2px solid rgba(13,98,255,0.12);
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-weight:600;
+  background:transparent;
+  white-space:nowrap;
+  flex:0 1 auto;
+  min-width:84px;
+  text-align:center;
+}
+.tab.active{
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
+  box-shadow:0 6px 18px rgba(13,98,255,0.16)
+}
+
+/* main area responsive */
+main{
+  width:100%;
+  max-width:1100px;
+  margin:26px auto;
+  padding:0 12px;
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:700;
+  font-size:30px;
+  margin-bottom:18px
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:22px
+}
+
+.card{
+  background:var(--card);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 6px 16px rgba(2,6,23,0.06);
+  border:1px solid rgba(2,6,23,0.04)
+}
+
+/* ===== CAMBIO PRINCIPAL PARA QUE LAS IMÁGENES NO SE CORTEN ===== */
+/* Hacemos que el contenedor se adapte al contenido de la imagen */
+.card .media{
+  width:100%;
+  background:#eee;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;      /* espacio opcional alrededor de la imagen */
+  /* ya no forzamos height:200px; */
+}
+
+/* la imagen se adapta al ancho, mantiene proporción y no se recorta */
+.card img{
+  width:100%;
+  height:auto;
+  object-fit:contain; /* evita recortes */
+  display:block;
+  border-radius:8px;
+  max-width:100%;
+}
+
+/* Mantener cuerpo de tarjeta igual */
+.card .body{padding:16px}
+.card .title{font-weight:700;color:#0b4a86;margin-bottom:10px}
+.card .text{color:var(--muted);line-height:1.45;margin-bottom:14px}
+.card .meta{font-size:13px;color:var(--muted);display:flex;gap:12px;align-items:center}
+
+.section{display:none}
+.section.active{display:block}
+
+/* icons */
+.icon{width:18px;height:18px;display:inline-block;border-radius:4px;background:linear-gradient(135deg,#0d62ff,#4aa3ff);}
+.icon-noticias{-webkit-mask:radial-gradient(circle at center,black 60%,transparent 61%);}
+.icon-anuncios{-webkit-mask:polygon(50% 0,100% 100%,0 100%);}
+.icon-eventos{-webkit-mask:radial-gradient(circle at 50% 60%,black 50%,transparent 51%);}
+.icon-negocios{-webkit-mask:inset(0 0 0 0 round 3px);}
+
+/* Pausa Estudiantil */
+.pause-hero{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  padding:16px;
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(13,98,255,0.06),rgba(74,163,255,0.03));
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.pause-hero .left{flex:1}
+.message-box{padding:14px;border-radius:10px;background:#07203a;color:white}
+
+.small-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+
+.mini{
+  padding:12px;
+  border-radius:10px;
+  background:#fff;
+  border:1px solid rgba(2,6,23,0.04)
+}
+
+.btn{
+  background:var(--primary);
+  color:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  border:0;
+  cursor:pointer;
+  font-weight:700
+}
+
+.challenge-tag{
+  background:#f1f7ff;
+  color:var(--primary);
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:700
+}
+
+.tip{
+  background:#fff;
+  padding:10px;
+  border-radius:8px;
+  font-size:14px;
+  border:1px solid rgba(2,6,23,0.04)
+}
+
+footer{
+  width:100%;
+  padding:20px 0;
+  background:#0a0a23;
+  display:flex;
+  justify-content:center;
+  align-items:center
+}
+.footer-content{
+  display:flex;
+  gap:20px;
+  align-items:center
+}
+.footer-content img{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  cursor:pointer;
+  transition:0.2s
+}
+.footer-content img:hover{transform:scale(1.15)}
+.footer-text{color:white;font-size:14px}
+
+@media(max-width:720px){
+  .tabs{padding:10px}
+  .tab{padding:8px 12px;font-size:14px;min-width:72px}
+  .section-title{font-size:22px}
+  .grid{grid-template-columns:1fr}
+  .card .media{padding:8px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135810.png" alt="logo">
+  <div class="title">
+    <div class="main">P17-Online</div>
+    <div class="sub">Comunidad Preparatoria</div>
+  </div>
+</header>
+
+<div class="tabs-wrap">
+<nav class="tabs">
+  <button class="tab active" data-section="noticias"><span class="icon icon-noticias"></span> Noticias</button>
+  <button class="tab" data-section="anuncios"><span class="icon icon-anuncios"></span> Anuncios</button>
+  <button class="tab" data-section="eventos"><span class="icon icon-eventos"></span> Eventos</button>
+  <button class="tab" data-section="negocios"><span class="icon icon-negocios"></span> Negocios</button>
+  <button class="tab" data-section="pausa"><span class="icon icon-negocios"></span> Pausa Estudiantil</button>
+</nav>
+</div>
+
+<main>
+
+<!-- NOTICIAS -->
+  <section id="noticias" class="section active" aria-live="polite">
+    <div class="section-title">Noticias</div>
+    <div id="noticias-grid" class="grid">
+  <article class="card"><div class="media"><img src="https://scontent.fgdl2-3.fna.fbcdn.net/v/t39.30808-6/581214713_1168756358567592_4995861533303468572_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEKOJQkvsBV7dJoJzNd9HYbLQduYUfhhswtB25hR-GGzIw2VuRt7Qu49ElZxtvd745n8xf-nWGoMhDlbw8pyUOP&_nc_ohc=Awyr1q5CFlgQ7kNvwEkDPti&_nc_oc=Adl8weF7vS7uhMGVammAnQZrtqPVPDjdBEE8K1uqCDyP407oDyu_7Oh7Qv18C6WtejjxXUewKZej-V9mAPIHopjw&_nc_zt=23&_nc_ht=scontent.fgdl2-3.fna&_nc_gid=-ZUPnNtGODsoxXm5_zHpIg&oh=00_AfjTmzskrdL9uDVuvorPAo0zG6QZNl2jog7kLzuN1eogHQ&oe=691F5367" alt=""></div><div class="body"><div class="title">Puro talento en Preparatoria 17 UdeG</div><div class="text">Sunny ganó el 🏆 primer lugar en el III concurso #Interprepas de canto , que se llevó a cabo en Preparatoria 3 U. de G.  🖤❤️💛🦁</div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="https://external.fgdl2-2.fna.fbcdn.net/emg1/v/t13/4639927390637722622?url=https%3A%2F%2Fwww.informador.mx%2F__export%2F1762977033472%2Fsites%2Felinformador%2Fimg%2F2025%2F11%2F12%2Fweb_canva-11-_version1762977017247.png_2131385039.png&fb_obo=1&utld=informador.mx&stp=c0.5000x0.5000f_dst-jpg_flffffff_p500x261_q75_tt6&_nc_gid=ed9986uOZAJ0ArpmLsnWMw&_nc_eui2=AeHtaBBfgRi5KneTR0bOzqXZRcRImvMvMtBFxEia8y8y0CQN_d27nz7BkRmjckCIIiOUPg1AtPqe1dUobaL5fjCU&_nc_oc=AdmTTkPwUR4gExIOQiYv76ebt24hWFSR9ftvpUT9khLeNhBWsZwibBgZDoulnm6CWpxQLAaorEMzTUeYfMzASB8e&ccb=13-1&oh=06_Q3-5AZh26H_uGnBv5UEkb9TgCtL2xvr8FYJCe7t3rrPSDOy6&oe=691D6C1F&_nc_sid=c97757" alt=""></div><div class="body"><div class="title">Podemos votar ... </div><div class="text">Apoya a Roberto en.... <a href=" https://www.informador.mx/.../vota-por-tu-favorito-rugido...">Vota aquí</a></div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="https://scontent.fgdl2-2.fna.fbcdn.net/v/t39.30808-6/581186135_1167295822046979_4523703507171303180_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFmnmk9pUnLsi5wDaI6LsLFzgqpov0Y_wrOCqmi_Rj_Cg72OqLkRQZ5N5EG3VcR4iByU4RyO024OSYRaMPtaUDf&_nc_ohc=G20OdJxWI6cQ7kNvwFMSrKa&_nc_oc=AdnjwlVtEZBZQABvlgBqjmp5ZIElqfBT51XidqVUjgA3CJEb6wLWAcRkxzHwn_nKobxz9iDNhUX060x4K76UZlip&_nc_zt=23&_nc_ht=scontent.fgdl2-2.fna&_nc_gid=Yc2oaz5v1Acad7q5xStMvA&oh=00_AfhhEXNo62P1x0KJdGozqBTSO2-xnfTU7qeniOdcp0Cbzg&oe=69230E55" alt=""></div><div class="body"><div class="title">Se va Robert a la final de #RugidoUDG  😁🦁</div><div class="text">quieres acompañarlo? registrate aqui <a href="https://forms.gle/6hMsTe3oWpKqjABL9">Apoyemos a Robert.....</a></div><div class="meta">Redacción · Hoy</div></div></article>
+
+  <article class="card"><div class="media"><img src="https://scontent.fgdl2-3.fna.fbcdn.net/v/t39.30808-6/576745563_1159886952787866_8313975899670171119_n.jpg?stp=cp6_dst-jpegr_s590x590_tt6&_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGIFV-Dt3UI-Q6WZ3WzNkqteTwiPmvQzHt5PCI-a9DMexQNSmLByfaezOXfyVXZ71_NLhkPkzVIKuo248eVHR3F&_nc_ohc=wwnimfvxbucQ7kNvwHd824h&_nc_oc=AdkC5Xkg-onLfR5T1o364kCb6ocP8ntO3blDDruwkar2lDPOzI0JK1JvgrwamxH2uL9vgEg-w7FImjJG9Kyzw2d5&_nc_zt=23&se=-1&_nc_ht=scontent.fgdl2-3.fna&_nc_gid=5rynPSMuE41-w1TFDQi1EQ&oh=00_AfhRQc2tgUPqy6Ls-NYxJje56-_axQZ7TB77b6ATqyO1fg&oe=691F782D" alt=""></div><div class="body"><div class="title">¡La Prepa 17 estuvo de fiesta y en movimiento! 👟🎉</div><div class="text">En el marco de nuestro XV Aniversario, la semana pasada celebramos con todo:
+🏃 Carrera Atlética 5K
+🧘 Master Class de Yoga
+🏀 Partidos amistosos de Basketball
+⚽ Retas de Football
+¡Fue increíble ver a alumnos y trabajadores conviviendo y dándolo todo en cada actividad! 👏
+Gracias a todos por ser parte de esta gran celebración. ¡Puro orgullo Prepa 17!</div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="https://scontent.fgdl2-1.fna.fbcdn.net/v/t39.30808-6/574567578_1158181432958418_7495826315966042746_n.jpg?stp=dst-jpg_s590x590_tt6&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHexycTVGR3dp4Gz7WOBTUb59TN47lnVwrn1M3juWdXComJYqDk4BA-wmr6vmkxJBpD7U1Ii_RbIIrBCVK8iLub&_nc_ohc=MjWryqgGjFIQ7kNvwEt5kp1&_nc_oc=AdmvJe-t3PsddcVBY5JsbVRPRtK1XWo3cIwRfjE0NlIrVj0zARqmBHcBRPrY3UVqaKOzqRYYIBXH3BnDt0qOc38j&_nc_zt=23&_nc_ht=scontent.fgdl2-1.fna&_nc_gid=9uQugIjloGOiCksURfczoA&oh=00_Afil91Sn8-u0dtjrqZrnkvNo4JrRYmtv7NW70nBBAl6qDw&oe=691F6AAF" alt=""></div><div class="body"><div class="title">¡Simplemente espectacular! 🌟</div><div class="text">​Así vivimos nuestra celebración de Día de Muertos en la Prepa 17. Queremos felicitar a toda la comunidad estudiantil, maestros y personal por hacer de este evento algo inolvidable.​La creatividad en los altares, el detalle en las catrinas y el espíritu de compañerismo nos llenan de orgullo. 💛❤️🦁🖤💀​¡Gracias a todos por participar! Les compartimos los mejores momentos.(No olvides etiquetarte y compartir tus fotos con nosotros)</div><div class="meta">Redacción · Hoy</div></div></article>
+</div>
+</div>
+</div>
+  </section>
+
+<!-- ANUNCIOS -->
+  <section id="anuncios" class="section" aria-live="polite">
+    <div class="section-title">Anuncios</div>
+    <div id="anuncios-grid" class="grid">
+  <article class="card"><div class="media"><img src="anuncio 1.jpg" alt=""></div><div class="body"><div class="title">Formulario de Beca</div><div class="text">No olvides realizarlo!!!</div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="anuncio 2.jpg" alt=""></div><div class="body"><div class="title">Recolectando Esperanza</div><div class="text">El taller "Recolectando Esperanza" esta recolectando tapitas hasta el 17 de noviembre.</div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="anuncio 3.jpg" alt=""></div><div class="body"><div class="title">Expo Innovación Tecnológica</div><div class="text">Inscribete ahora y participa.</div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="anuncio 4.jpg" alt=""></div><div class="body"><div class="title">Escuela para padres</div><div class="text">Taller de violencia psicológica y otras formas de generar violencia.</div><div class="meta">Redacción · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="anuncio 5.jpg" alt=""></div><div class="body"><div class="title">Escuela para padres</div><div class="text">Taller de autoestima.</div><div class="meta">Redacción · Hoy</div></div></article>
+</div>
+</div>
+</div>
+  </section>
+
+<!-- EVENTOS -->
+  <section id="eventos" class="section" aria-live="polite">
+    <div class="section-title">Eventos</div>
+    <div id="eventos-grid" class="grid">
+  <article class="card"><div class="media"><img src="evento 1.jpg" alt=""></div><div class="body"><div class="title">CONCURSO DE DISFRACES</div><div class="text">Participa!!!</div><div class="meta">Coordinación · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="evento 2.jpg" alt=""></div><div class="body"><div class="title">2da Carrera 5k</div><div class="text">Celebrando el 15° aniversario </div><div class="meta">Coordinación · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="evento 3.jpg" alt=""></div><div class="body"><div class="title">Partido Amistoso</div><div class="text">Celebrando el 15° aniversario</div><div class="meta">Coordinación · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="evento 4.jpg" alt=""></div><div class="body"><div class="title">Master Class de Yoga</div><div class="text">Celebrando el 15° aniversario</div><div class="meta">Coordinación · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="evento 5.jpg" alt=""></div><div class="body"><div class="title">Concuros de catrinas y catrines vivientes</div><div class="text">En conmemoración al día de muertos</div><div class="meta">Coordinación · Hoy</div></div></article>
+</div>
+</div>
+</div>
+  </section>
+
+<!-- NEGOCIOS -->
+ <section id="negocios" class="section" aria-live="polite">
+    <div class="section-title">Negocios</div>
+    <div id="negocios-grid" class="grid">
+  <article class="card"><div class="media"><img src="negocio 1.jpg" alt=""></div><div class="body"><div class="title">Calma tu antojo</div><div class="text">Prueba nuestros ricos snacks 🫣.</div><div class="meta">Comunidad · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="negocio 2.jpg" alt=""></div><div class="body"><div class="title">Algo Dulce?</div><div class="text">Acercate para deshacer ese pequeño gusto 😊.</div><div class="meta">Comunidad · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="negocio 3.jpg" alt=""></div><div class="body"><div class="title">Bonless</div><div class="text">Ven y calma tu hambre para un mejor rendimiento academico 😌</div><div class="meta">Comunidad · Hoy</div></div></article>
+  <article class="card"><div class="media"><img src="negocio 4.jpg" alt=""></div><div class="body"><div class="title">Un poco de todo</div><div class="text">Descubre la variedad que ofrecemos 🤤.</div><div class="meta">Comunidad · Hoy</div></div></article>
+</div>
+</div>
+</div>
+  </section>
+
+<!-- PAUSA ESTUDIANTIL -->
+<section id="pausa" class="section">
+
+  <div class="section-title">Pausa Estudiantil</div>
+
+  <div class="pause-hero">
+    <div class="left">
+      <h3>Tu punto medio entre salud mental y motivación</h3>
+      <p>Tips reales, mini ejercicios y retos semanales. Toca el león 🦁.</p>
+    </div>
+
+    <div class="right">
+      <div class="message-box">
+        <div id="motiv-msg" style="font-weight:700">
+          ¡Ánimo! Hoy puede ser el día en que consigas esa meta que tienes en mente 🦁💪
+        </div>
+        <div class="muted" style="margin-top:8px;font-size:13px">¿Necesitas ánimo ahora?</div>
+        <div style="margin-top:10px">
+          <button id="need-cheer" class="btn">Necesito ánimo 🦁</button>
+          <button id="play-audio" class="btn" style="background:#2b2b2b;margin-left:8px">Escuchar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div>
+      <div class="card">
+        <div class="body">
+          <div class="title">Tips reales contra el estrés</div>
+          <div class="muted">Prácticos y rápidos.</div>
+
+          <div id="tips-list" class="tips-list" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="card">
+        <div class="body">
+          <div class="title">Mini ejercicios</div>
+          <div class="muted">Hazlos en 1–5 minutos.</div>
+
+          <div id="exercises" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="body">
+          <div class="title">Retos semanales</div>
+          <div class="muted">Mejora tu rutina.</div>
+
+          <div id="challenges" style="margin-top:12px"></div>
+
+          <div class="controls" style="margin-top:12px">
+            <button id="new-challenge" class="btn">Nuevo reto</button>
+            <button id="copy-challenge" class="btn" style="background:#2b2b2b">Copiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="card">
+        <div class="body">
+          <div class="title">Recursos rápidos</div>
+          <div class="muted">Música y videos útiles.</div>
+
+          <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:10px">
+            <a class="mini" href="https://www.youtube.com/results?search_query=calm+study+music" target="_blank">Música para estudiar</a>
+            <a class="mini" href="https://www.youtube.com/results?search_query=guided+breathing+exercise" target="_blank">Respiración guiada</a>
+            <a class="mini" href="https://www.youtube.com/results?search_query=short+relaxing+video" target="_blank">Videos relajantes</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+<!-- ================== SCRIPT OFICIAL ================== -->
+<script>
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+const MOTIVACIONES = [
+  "¡Ánimo! Hoy puede ser el día en que consigas esa meta que tienes en mente 🦁💪",
+  "Recuerda que descansar también es parte del éxito. Toma 15 min y vuelve con todo.",
+  "Si algo salió mal, inténtalo otra vez. Nadie nace sabiendo.",
+  "Pequeños pasos = grandes cambios. Hoy una tarea a la vez.",
+  "Respira profundo. Ya hiciste más de lo que crees. 💫",
+  "No eres tu nota. Eres valiente por intentarlo. 🦁"
+];
+
+const TIPS = [
+  "Antes del examen, come algo ligero y evita azúcar en exceso.",
+  "Divide el estudio en bloques Pomodoro de 25 min.",
+  "Apaga las notificaciones mientras estudias.",
+  "Camina 5 min si estás muy ansioso.",
+  "Evita estudiar en cama.",
+  "Habla con alguien 5 min para despejarte."
+];
+
+const EXERCISES = [
+  {title:"Respiración 4-4-4", desc:"Inhala 4s, sostén 4s, exhala 4s. Repite."},
+  {title:"Micro pausa 2 min", desc:"Cierra los ojos y respira profundo."},
+  {title:"Estiramiento rápido", desc:"Estira cuello, hombros y brazos."},
+  {title:"Chequeo de 3 cosas", desc:"Anota 3 logros del día."}
+];
+
+const CHALLENGES = [
+  "Reto: Semana sin quejas - cada vez quejarse, anotar y convertir en solución.",
+  "Reto: 5 días sin procrastinar - prioriza 3 tareas.",
+  "Reto: Duerme 7 horas 4 noches seguidas.",
+  "Reto: Micro-descansos cada 50 min.",
+  "Reto: Gracias 3x - anota 3 cosas por agradecer."
+];
+
+document.addEventListener('DOMContentLoaded', ()=>{
+
+  /* SPA tabs */
+  const tabs=document.querySelectorAll('.tab');
+  const sections=document.querySelectorAll('.section');
+
+  function showSection(id){
+    sections.forEach(s=>s.style.display='none');
+    const el = document.getElementById(id);
+    if(el) el.style.display='block';
+
+    tabs.forEach(t=>t.classList.remove('active'));
+    const sel = document.querySelector(`.tab[data-section="${id}"]`);
+    if(sel) sel.classList.add('active');
+  }
+
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    const sec=t.dataset.section;
+    showSection(sec);
+    history.pushState({sec},'',`#${sec}`);
+  }));
+
+  const ini=location.hash.replace('#','')||'noticias';
+  showSection(ini);
+
+  window.onpopstate=e=>{
+    const sec=e.state?.sec||'noticias';
+    showSection(sec);
+  };
+
+  /* Tips */
+  const tipsList=document.getElementById('tips-list');
+  TIPS.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='tip';
+    d.textContent=t;
+    tipsList.appendChild(d);
+  });
+
+  /* Exercises */
+  const ex=document.getElementById('exercises');
+  EXERCISES.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='mini';
+    d.innerHTML=`
+      <strong>${e.title}</strong>
+      <div style="font-size:13px;color:#666">${e.desc}</div>
+    `;
+    ex.appendChild(d);
+  });
+
+  /* Challenges */
+  const ch=document.getElementById('challenges');
+
+  function showChallenge(c){
+    ch.innerHTML=`
+    <div class="mini">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>${c.split(' - ')[0]}</strong>
+        <div class="challenge-tag">Reto</div>
+      </div>
+      <div style="margin-top:8px;color:var(--muted)">
+        ${c.replace(/^[^-]*-?/,'')}
+      </div>
+    </div>`;
+  }
+
+  showChallenge(rand(CHALLENGES));
+
+  document.getElementById('new-challenge')
+    .addEventListener('click',()=>showChallenge(rand(CHALLENGES)));
+
+  document.getElementById('copy-challenge')
+    .addEventListener('click',()=>{
+      navigator.clipboard.writeText(ch.innerText)
+      .then(()=>alert("Reto copiado ✨"));
+    });
+
+  /* Motivación + audio */
+  const disp=document.getElementById('motiv-msg');
+
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='es-MX';
+    window.speechSynthesis.speak(u);
+  }
+
+  document.getElementById('need-cheer')
+    .addEventListener('click',()=>{
+      const m=rand(MOTIVACIONES);
+      disp.textContent=m;
+      speak(m);
+    });
+
+  document.getElementById('play-audio')
+    .addEventListener('click',()=>{
+      speak(disp.textContent);
+    });
+
+});
+</script>
+
+<footer class="footer">
+  <div class="footer-content">
+    <a href="http://prepa17.sems.udg.mx/" target="_blank">
+      <img src="udg.jpeg" alt="UdeG" />
+    </a>
+
+    <a href="https://www.facebook.com/Prepa17UDG?locale=es_LA" target="_blank">
+      <img src="face.png" alt="Facebook" />
+    </a>
+
+    <div style="display:flex;flex-direction:column;">
+      <span class="footer-text">Páginas Oficiales</span>
+      <span style="color:#cfcfcf;font-size:12px">P17-Online • Comunidad Preparatoria</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
